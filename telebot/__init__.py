@@ -206,19 +206,7 @@ class AsyncTeleBot:
             if is_match:
                 logger.debug(f"Using handler {handler_name!r} to process {update_content_log}")
                 try:
-                    handler_func = handler["function"]
-                    handler_func_n_params = len(list(signature(handler_func).parameters.keys()))
-                    if handler_func_n_params == 1:
-                        await handler_func(update_content)
-                        return
-                    elif handler_func_n_params == 2:
-                        await handler_func(update_content, self)
-                        return
-                    else:
-                        raise TypeError(
-                            "Handler function must have one (update content) or two (update content and bot) parameters, "
-                            + f"but found function with {handler_func_n_params} params"
-                        )
+                    return await invoke_handler(handler["function"], update_content, self)
                 except Exception:
                     logger.exception(f"Error processing update with handler '{handler_name}': {update_content}")
                     return
@@ -3172,3 +3160,22 @@ class AsyncTeleBot:
 
 def sort_by_priority(handlers: list[service_types.Handler]):
     handlers.sort(key=lambda h: h.get("priority") or 1, reverse=True)
+
+
+async def invoke_handler(
+    handler_func: service_types.HandlerFunction,
+    update_content: service_types.UpdateContent,
+    bot: "AsyncTeleBot",
+) -> None:
+    arg_count = len(list(signature(handler_func).parameters.keys()))
+    if arg_count == 1:
+        await handler_func(update_content)
+        return
+    elif arg_count == 2:
+        await handler_func(update_content, bot)
+        return
+    else:
+        raise TypeError(
+            "Handler function must have one (update content) or two (update content and bot) parameters, "
+            + f"but found function with {arg_count} params"
+        )
