@@ -79,19 +79,19 @@ class PreventShutdown(GracefulShutdownCondition):
     @contextlib.asynccontextmanager
     async def allow_shutdown(self):
         initial_state = self._is_preventing_shutdown
-        logger.debug(f"Entering negated shutdown prevention context ({self._reason = }, {initial_state = })")
+        # logger.debug(f"Entering negated shutdown prevention context ({self._reason = }, {initial_state = })")
         self._is_preventing_shutdown = False
         yield
-        logger.debug(f"Exiting negated shutdown prevention context ({self._reason = }, restoring {initial_state = })")
+        # logger.debug(f"Exiting negated shutdown prevention context ({self._reason = }, restoring {initial_state = })")
         self._is_preventing_shutdown = initial_state
 
     async def __aenter__(self):
-        logger.debug(f"Entering shutdown prevention context ({self._reason = })")
+        # logger.debug(f"Entering shutdown prevention context ({self._reason = })")
         self._is_preventing_shutdown = True
         return None
 
     async def __aexit__(self, *args, **kwargs):
-        logger.debug(f"Exiting shutdown prevention context ({self._reason = })")
+        # logger.debug(f"Exiting shutdown prevention context ({self._reason = })")
         self._is_preventing_shutdown = False
         return None
 
