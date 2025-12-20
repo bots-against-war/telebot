@@ -344,7 +344,11 @@ class MockedAsyncTeleBot(AsyncTeleBot):
         return True
 
     @mocked
-    async def delete_message(self, chat_id: Union[int, str], message_id: int, timeout: Optional[int] = None) -> bool:
+    async def delete_message(self, chat_id: Union[int, str], message_id: int) -> bool:
+        return True
+
+    @mocked
+    async def delete_messages(self, chat_id: Union[int, str], message_ids: list[int]) -> bool:
         return True
 
     @mocked
