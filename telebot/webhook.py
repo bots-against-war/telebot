@@ -95,7 +95,9 @@ class WebhookApp:
         webhook_url = self.base_url + WEBHOOK_ROUTE.format(subroute=subroute)
         try:
             existing_webhook_info = await runner.bot.get_webhook_info()
-            if existing_webhook_info.url == webhook_url:
+            if existing_webhook_info.url == webhook_url and sorted(existing_webhook_info.allowed_updates) == sorted(
+                [str(u) for u in runner.bot.allowed_updates]
+            ):
                 logger.info(f"Existing webhook found for {runner.bot_prefix}")
             else:
                 await runner.bot.set_webhook(url=webhook_url)

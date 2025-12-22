@@ -265,7 +265,7 @@ class WebhookInfo(JsonDeserializable):
         last_error_message=None,
         last_synchronization_error_date=None,
         max_connections=None,
-        allowed_updates=None,
+        allowed_updates: list[str] | None = None,
         **kwargs,
     ):
         self.url = url
@@ -276,7 +276,7 @@ class WebhookInfo(JsonDeserializable):
         self.last_error_message = last_error_message
         self.last_synchronization_error_date = last_synchronization_error_date
         self.max_connections = max_connections
-        self.allowed_updates = allowed_updates
+        self.allowed_updates: list[str] = allowed_updates or []
 
 
 class User(JsonDeserializable, Dictionaryable, JsonSerializable):
